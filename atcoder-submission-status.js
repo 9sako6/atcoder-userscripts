@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         atcoder-submission-status
-// @name:en      atcoder-submission-status
+// @name         AtCoder Submission Status
+// @name:en      AtCoder Submission Status
 // @namespace    https://github.com/9sako6/atcoder-userscripts
-// @version      0.3
+// @version      1.0
 // @description  AtCoderで提出した解答がいくつのテストケースでACか, WAか...が一目でわかるように表示する
 // @description:en This script shows submission's statuses clearly!
 // @author       9sako6
@@ -10,6 +10,7 @@
 // @exclude      https://atcoder.jp/contests/*/submissions/me
 // @require http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js
 // @license     MIT
+// @supportURL   https://github.com/9sako6/atcoder-userscripts/issues
 // ==/UserScript==
 
 function makeTable() {
@@ -52,30 +53,45 @@ function makeTable() {
   wrapElem.appendChild(newContent);
   statusPanel.parentNode.insertBefore(wrapElem, statusPanel);
 
-  // table
-  let trElem = '<tr>';
+  // make fake table
+  // to 
+  let trElem = '<div style="width: 100%; display: flex;">';
+  const codeNum = statusCodes.length;
   statusCodes.forEach((status, i) => {
     const ACflag = (status === 'AC' ? true : false);
-    const label = `<span
-      class="label label-${ACflag ? 'success' : 'warning'}"
-      aria-hidden="true"
-      data-toggle="tooltip"
-      data-placement="top"
-      title=""
-    >${status}</span>`;
-
-    trElem += `<td style="line-height: 1.2em; text-align: center"><span>${label}</span></td>`;
+    trElem += `
+    <div
+      style="
+        width: ${100/codeNum}%;
+        text-align: center;
+        border: 0.1px solid #ddd;
+        border-top: 0;
+        border-bottom: 0;
+        border-right: 0;
+        ${i == 0 ? "border-left: 0;" : ""}">
+      <div style="
+        line-height: 2em;
+        border: 0.1px solid #ddd;
+        border-top: 0;
+        border-right: 0;
+        border-left: 0;
+        border-bottom: 1;">
+      <span
+        class="label label-${ACflag ? 'success' : 'warning'}"
+        aria-hidden="true"
+        data-toggle="tooltip"
+        data-placement="top"
+        style="text-align: center; line-height: 2em;"
+      >${status}</span>
+      </div>
+      <div style="line-height: 1.8em;">${counter[status]}/${countAll}</div>
+    </div>`;
   });
+  trElem += '</div>';
 
-  trElem += '</tr><tr>';
-  statusCodes.forEach((statusCode, i) => {
-    trElem += `<td style="line-height: 1.2em; text-align: center">
-    <span>${counter[statusCode]}/${countAll}</span></td>`;
-  });
-  trElem += '</tr>';
-  const resultTable = `<table class="table table-bordered table-striped th-center">
-  <tbody>${trElem}</tbody>
-  </table>`;
+  const resultTable = `<div class="table table-bordered table-striped th-center">
+  ${trElem}
+  </div>`;
   $('#added-result-panel').append(resultTable);
 }
 

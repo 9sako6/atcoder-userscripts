@@ -3,7 +3,7 @@
 
 # Userscripts for AtCoder
 
-## atcoder-submission-status
+## AtCoder Submission Status
 This script shows submission's statuses clearly!
 
 [Install Link](https://greasyfork.org/ja/scripts/383817-atcoder-submission-status)
